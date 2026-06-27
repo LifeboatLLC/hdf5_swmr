@@ -117,45 +117,80 @@ crasher [options] <delay> <command> [args]
 ```bash
 crasher -v -p 5 ./my_program arg1 arg2
 ```
-<!-- 
-The test scripts have been commented out because they are not quite ready for user testing.
-The instructions are also likely to be out of date too.
-                                -- Cody S. 6/15/26
- -->
-<!-- test_crash_recovery.sh
+
+test_crash_recovery.sh
 ======================
-This script tests the recovery tool's ability to recover HDF5 files that have been corrupted by simulated 
-crashes during the write process. It uses the crasher utility to kill VFD SWMR writer programs at 
-incrementing time intervals (starting from 0.0 seconds and increasing by 0.1 seconds each iteration), 
-then attempts to recover the resulting files using the recovery_tool utility and verifies that the 
-recovered files are valid.
+### Purpose
+Intended for development purposes.
 
-Usage: test_crash_recovery.sh [options] [test1 test2 ...]
+This script automates validation of the VFD SWMR recovery mechanism. It is intended for developers testing changes to the recovery process or verifying that VFD SWMR writer programs can be recovered correctly after unexpected termination. The script repeatedly exercises the recovery workflow across a range of crash timings and validates the recovered HDF5 files automatically.
 
-Options:
-    -h: Show help message and exit
-    -v: Enable verbose output
-    -k: Keep output files from each crash iteration (generates many files, useful for debugging)
+### Usage
+```bash
+./test_crash_recovery.sh [-h] [-d] [-v] [-k] [test1 test2 ...]
+```
 
-Output Files (when using -k option):
-    <test>_recovery.out.<count>         - Recovery tool output and error messages
-    <test>_h5clear_pre.out.<count>      - H5clear output before recovery
-    <test>_h5clear_post.out.<count>     - H5clear output after recovery
-    <test>_validation_pre.out.<count>   - Validation output before recovery
-    <test>_validation_post.out.<count>  - Validation output after recovery
-    <writer_name>.out.<count>           - Writer tool output
-Where <test> is the test name, <count> is the iteration number, and <writer_name> is the actual name of the writer program. 
-Note that a single test may run dozens of iterations, so many files will be created with the -k option.
+Run crash recovery tests for VFD SWMR.
+For each test iteration, a VFD SWMR writer process is executed and then forcibly
+terminated after a specified delay using the crasher utility. The resulting HDF5
+state is then recovered using the recovery_tool and validated using H5LS and H5DUMP
+before and after recovery to verify correctness of the recovery process.
 
-Tests:
-    standard  - Test vfd_swmr_writer crash recovery
-    bigset    - Test vfd_swmr_bigset_writer crash recovery
-    sparse    - Test vfd_swmr_sparse_writer crash recovery
-    remove    - Test vfd_swmr_remove_writer crash recovery
+### Warning 
+WARNING: This test script has the potential to write multiple TERABYTES of data to your
+filesystem. Even if you do not keep the generated files (using the `-k` option),
+the script still performs all writes during each test iteration. The difference
+is that files are deleted after each run, so disk usage does not accumulate, but
+total write volume to the storage device remains the same.
 
+This may result in significant wear on storage devices and long execution times,
+depending on the number of tests and dataset sizes used, as well as the type of
+storage used (ssd vs hhd).
+
+### Options
+  - `-h`  Show the help message and exit
+  - `-d`  Choose a specific delay in seconds (e.g. 0.5, 1.1, ...)
+          NOTE: A single specific test must be selected with this option.
+  - `-v`  Enable verbose output
+  - `-k`  Keep output files from each iteration. Useful for debugging.  
+          WILL GENERATE DOZENS, IF NOT HUNDREDS, OF FILES.  
+          THIS MAY CONSUME TERABYTES OF DISK SPACE
+
+Files preserved when using the -k option:
+```text
+  <test>_recovery.out.<count>            - Recovery tool output and error messages  
+  <test>_h5clear_pre.out.<count>         - H5clear status reset before validation  
+  <test>_h5clear_post.out.<count>        - H5clear status reset after validation  
+  <test>_validation_pre.out.<count>      - File validation before recovery  
+  <test>_validation_post.out.<count>     - File validation after recovery  
+  <writer>.out.<count>                   - Writer tool output and error messages  
+  <expected HDF5 file(s)>.<count>        - Generated HDF5 files, including the base file  
+                                            and derived variants (<name>_a.h5, <name>_b.h5)  
+  Where:
+    - <test> is the test name (standard, bigset, sparse, or remove)
+    - <count> is the iteration number
+    - <writer> is the name of the actual writer program used in the test.
+```
+
+### Test selections:
+```text
+  standard  Run standard writer crash test (vfd_swmr_writer)
+  bigset    Run bigset writer crash test (vfd_swmr_bigset_writer)
+  sparse    Run sparse writer crash test (vfd_swmr_sparse_writer)
+  remove    Run remove writer crash test (vfd_swmr_remove_writer)
+```
 If no tests are specified, all tests will be run.
 
+### Additional information
 All output files are placed in a newly made crash_test/ directory inside the current working directory.
+
+Examples:
+```bash
+  ./test_crash_recovery.sh                    # Run all tests
+  ./test_crash_recovery.sh -v -k standard     # Run standard test with verbose output and keep files
+  ./test_crash_recovery.sh bigset sparse      # Run only bigset and sparse tests
+  ./test_crash_recovery.sh -d 0.5 bigset      # Run a single crash test for bigset with 0.5s delay
+```
 
 Test Process (for each iteration):
 1. Generate initial HDF5 file (if required by the test)
@@ -169,72 +204,86 @@ Test Process (for each iteration):
 The test continues incrementing the crash delay until the writer tool completes normally without being 
 crashed, at which point the test for that configuration ends.
 
-Environment Variables:
-    HDF5TestExpress - Controls test thoroughness (0=exhaustive, 1=default, 2+=quick)
-    HDF5_NOCLEANUP  - If set, prevents cleanup of output files
-    H5CLEAR_PATH    - Path to h5clear utility (set automatically by script)
+**Configurable Environment Variables:** 
+  - HDF5TestExpress  
+  Controls test thoroughness (0=exhaustive, 1=default, 2+=quick)
 
-Examples:
-    ./test_crash_recovery.sh                    # Run all tests
-    ./test_crash_recovery.sh -v -k bigset       # Run bigset test with verbose output and keep files
-    ./test_crash_recovery.sh bigset sparse      # Run only bigset and sparse tests
+  - ONLY_RUN_EACH_TEST_ONCE  
+  Some tests define multiple configuration sets. By default, this option is enabled and each test runs only the first configuration set. Setting this variable to false enables execution of all configuration sets, which can significantly increase total runtime.
 
-Note: The script should automatically select the correct project dir, but will fail if you move relavant files 
-from their expected spots.
-ALSO NOTE: Only the 'remove' test currently works.
+*Example:* `HDF5TestExpress=0 ONLY_RUN_EACH_TEST_ONCE=false ./test_crash_recovery.sh`
+
+> *Note:* The script should automatically select the correct project dir, but will fail 
+> if you move relevant files from their expected spots.
 
 
 exec_local_socket_test.sh
 =========================
-The local version of exec_nfs_socket_test, which tests the 'attrdset', 'bigset', 'dsetchks', 
-'dsetops', 'gfail', 'group', and 'zoo' VFD SWMR programs' socket communication ability with 
-options found in test/test_vfd_swmr.sh. The script allows you to select the tests individually,
-or to run multiple tests at once. All files will be placed in a local_socket_test/ directory in 
-the directory that you call the script from.
+### Purpose
+Intended for development purposes.
 
-Usage: exec_local_socket_test <test> <role> [md_dir]
-    <test>: The VFD SWMR test program that we want to test.
-            Can be one of the following:
-            'all', 'attrdset', 'bigset', 'gfail', 'group',
-            'group_basic', 'group_attrs', 'os_group_attrs', or 'zoo'.
-            Note: 'all' runs all tests, 'group' runs all group-related
-            tests.
-    <role>: 'reader' or 'writer' to indicate which role to run.
-            Also accepts just 'r' or 'w'.
+This script is the local-socket counterpart to `exec_nfs_socket_test.sh`. It provides a convenient way to run and debug the VFD SWMR socket communication tests locally without requiring an NFS-mounted filesystem.
 
-This script sets up and runs SWMR tests using local sockets. It assumes that
-you will run the writer and reader roles in separate terminal sessions. The
-writer role should be started before reader role, to allow the socket
-connection to establish correctly.
+The script supports the `attrdset`, `bigset`, `dsetchks`, `dsetops`, `gfail`, `group`, and `zoo` VFD SWMR test programs using the same options as `test/test_vfd_swmr.sh`. Individual tests may be selected, or multiple tests may be run in a single invocation.
+
+The writer and reader roles are intended to be run in separate terminal sessions, communicating over local sockets. All generated files are placed in a `local_socket_test/` directory created in the current working directory.
+
+### Usage
+```bash
+./exec_local_socket_test [-h] <test> <role>
+```
+
+**Where:**  
+- `-h`
+Prints a help message and exits.
+
+- `<test>`  
+The VFD SWMR test program to run.
+Can be one of the following:
+  'all', 'attrdset', 'bigset', 'gfail', 'group',  
+  'group_basic', 'group_attrs', 'os_group_attrs', or 'zoo'.  
+  Note: 'all' runs all tests, 'group' runs all group-related
+  tests.
+
+- `<role>`  
+'reader' or 'writer' to indicate which role to run.  
+Also accepts just 'r' or 'w'.
+
 
 exec_nfs_socket_test.sh
 =======================
-Tests the 'attrdset', 'bigset', 'dsetchks', 'dsetops', 'gfail', 'group', and 'zoo' VFD SWMR programs' socket 
-communication ability over a networked environment with options found in test/test_vfd_swmr.sh. The script has
-been configured to pass an IP address to each of the reader programs to establish a socket connection with
-the writer, and has slightly increase delays in some of the options to account for NFS-mount latency. The 
-script allows you to select the tests individually, or to run multiple tests at once. All files will be 
-placed in an nfs_socket_test/ directory in the directory that you call the script from.
+### Purpose
+Intended for development purposes.
 
-Usage: $0 <test> <role> [md_dir]
-    <test>: The VFD SWMR test program that we want to test.
-            Can be one of the following:
-            'all', 'attrdset', 'bigset', 'gfail', 'group',
-            'group_basic', 'group_attrs', 'os_group_attrs', or 'zoo'.
-            Note: 'all' runs all tests, 'group' runs all group-related 
-            tests.
-    <role>: 'reader' or 'writer' to indicate which role to run.
-            Also accepts just 'r' or 'w'.
-    [md_dir]: Optional directory path to place mdfile 
-                (only for bigset test). 
+This script is the NFS-based counterpart to `exec_local_socket_test.sh`. It provides a convenient way to run and debug the VFD SWMR socket communication tests in a networked environment using an NFS-mounted filesystem.
 
-This script sets up and runs SWMR tests using sockets. It assumes 
-that you will run the writer and reader roles on separate devices, 
-using an NFS mount as the current working directory when running 
-this script. The writer role should be started before the reader 
-role, to allow the socket connection to establish correctly.
+The script supports the `attrdset`, `bigset`, `dsetchks`, `dsetops`, `gfail`, `group`, and `zoo` VFD SWMR test programs using the same options as `test/test_vfd_swmr.sh`. It has been configured to pass the writer's IP address to each reader process to establish the socket connection and uses slightly longer delays for selected tests to account for NFS filesystem latency. Individual tests may be selected, or multiple tests may be run in a single invocation.
 
-Note: Since the bigset test requires the auxiliary process to 
-run with access to a valid POSIX file system, the [md_dir] 
-argument MUST be set to a valid local posix path on the reader 
-device. The writer doesn't need this argument. -->
+The writer and reader roles are intended to be run on separate systems that share an NFS-mounted working directory. All generated files are placed in an `nfs_socket_test/` directory created in the current working directory.
+
+> *Note:* The IP_ADDRESS variable at the top of script must be editted to contain a valid IP address string of the writer system for socket connection.
+
+### Usage
+```bash
+./exec_nfs_socket_test.sh <test> <role> [md_dir]
+```
+**Where:**
+- `-h`
+Prints a help message and exits.
+
+- `<test>`  
+The VFD SWMR test program to run.
+Can be one of the following:
+  'all', 'attrdset', 'bigset', 'gfail', 'group',  
+  'group_basic', 'group_attrs', 'os_group_attrs', or 'zoo'.  
+  Note: 'all' runs all tests, 'group' runs all group-related
+  tests.
+
+- `<role>`  
+'reader' or 'writer' to indicate which role to run.  
+Also accepts just 'r' or 'w'.
+
+### Additional Information
+The writer and reader roles should be started on separate systems, with the writer started first so that the socket connection can be established correctly.
+
+For the `bigset` test, the auxiliary process must create the external metadata file on a local POSIX filesystem. Therefore, when running the reader, [md_dir] must specify a valid local POSIX directory. This argument is ignored by the writer.

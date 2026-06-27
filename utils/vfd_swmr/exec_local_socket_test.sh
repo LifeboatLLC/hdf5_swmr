@@ -2,8 +2,36 @@
 
 # Gets the directory of ../.. relative to this script, which should be the root directory of the project
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-WAIT_TIME=3
+
+WAIT_TIME=3 # Delay (seconds) before starting reader to allow socket connection setup
+
 nerrors=0
+
+# Declare usage function
+usage() {
+    echo "Usage: $0 [-h] <test> <role>"
+    echo ""
+    echo "    -h:     Prints this help message then exits."
+    echo "    <test>: The VFD SWMR test program to run." 
+    echo "            Can be one of the following:"
+    echo "            'all', 'attrdset', 'bigset', 'gfail', 'group',"
+    echo "            'group_basic', 'group_attrs', 'os_group_attrs', or 'zoo'."
+    echo "            Note: 'all' runs all tests, 'group' runs all group-related"
+    echo "            tests."
+    echo "    <role>: Either 'reader' or 'writer' to indicate which role to run."
+    echo "            Also accepts just 'r' or 'w'."
+    echo ""
+    echo " This script sets up and runs SWMR tests using local sockets. It assumes that" 
+    echo " you will run the writer and reader roles in separate terminal sessions. The"
+    echo " writer role should be started before reader role, to allow the socket"
+    echo " connection to establish correctly."
+} # usage
+
+# Show help
+if [[ "$1" == "-h" || "$1" == "--help" ]]; then
+    usage
+    exit 0
+fi
 
 # Parse arguments
 chosen_test="$1"
@@ -17,24 +45,6 @@ fi
 cd local_socket_test || { echo "Failed to change directory to local_socket_test"; exit 1; }
 
 echo "Test directory: $(pwd)"
-
-# Declare usage function
-usage() {
-    echo "Usage: $0 <test> <role>"
-    echo "    <test>: The VFD SWMR test program that we want to test." 
-    echo "            Can be one of the following:"
-    echo "            'all', 'attrdset', 'bigset', 'gfail', 'group',"
-    echo "            'group_basic', 'group_attrs', 'os_group_attrs', or 'zoo'."
-    echo "            Note: 'all' runs all tests, 'group' runs all group-related"
-    echo "            tests."
-    echo "    <role>: 'reader' or 'writer' to indicate which role to run."
-    echo "            Also accepts just 'r' or 'w'."
-    echo ""
-    echo " This script sets up and runs SWMR tests using local sockets. It assumes that" 
-    echo " you will run the writer and reader roles in separate terminal sessions. The"
-    echo " writer role should be started before reader role, to allow the socket"
-    echo " connection to establish correctly."
-} # usage
 
 # Validate arguments
 if [ -z "$1" ] || [ -z "$2" ] || ( [ "$test_role" != "r" ] && [ "$test_role" != "w" ] ); then
