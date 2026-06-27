@@ -30,7 +30,7 @@ usage() {
     echo "              tests."
     echo "    <role>:   Either 'reader' or 'writer' to indicate which role to run."
     echo "              Also accepts just 'r' or 'w'."
-    echo "    [md_dir]: Optional directory path to place mdfile "
+    echo "    [md_dir]: Optional directory path to place the metadata file"
     echo "              (only for bigset test). "
     echo ""
     echo "This script sets up and runs SWMR tests using sockets. It assumes "
