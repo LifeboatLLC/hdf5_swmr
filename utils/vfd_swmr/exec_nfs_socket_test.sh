@@ -2,13 +2,49 @@
 
 # Gets the directory of ../.. relative to this script, which should be the root directory of the project
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)" 
-WAIT_TIME=5 # For NFS latency.
-IP_ADDRESS="192.168.50.238"
+
+WAIT_TIME=5 # Delay (seconds) before starting reader to allow socket connection setup. Increased for NFS latency.
+
+IP_ADDRESS=""
 if [ -z "$IP_ADDRESS" ]; then
     echo "Error: IP_ADDRESS variable is not set. Please set it to the writer device's IP address in the script."
     exit 1
 fi
+
 nerrors=0
+
+# Show help
+if [[ "$1" == "-h" || "$1" == "--help" ]]; then
+    usage
+    exit 0
+fi
+
+usage() {
+    echo "Usage: $0 [-h] <test> <role> [md_dir]"
+    echo "    -h:       Prints this help message then exits."
+    echo "    <test>:   The VFD SWMR test program that we want to test."
+    echo "              Can be one of the following:"
+    echo "              'all', 'attrdset', 'bigset', 'gfail', 'group',"
+    echo "              'group_basic', 'group_attrs', 'os_group_attrs', or 'zoo'."
+    echo "              Note: 'all' runs all tests, 'group' runs all group-related "
+    echo "              tests."
+    echo "    <role>:   Either 'reader' or 'writer' to indicate which role to run."
+    echo "              Also accepts just 'r' or 'w'."
+    echo "    [md_dir]: Optional directory path to place mdfile "
+    echo "              (only for bigset test). "
+    echo ""
+    echo "This script sets up and runs SWMR tests using sockets. It assumes "
+    echo "that you will run the writer and reader roles on separate devices, "
+    echo "using an NFS mount as the current working directory when running "
+    echo "this script. The writer role should be started before the reader "
+    echo "role, to allow the socket connection to establish correctly."
+    echo ""
+    echo "Note: Since the bigset test requires the auxiliary process to "
+    echo "run with access to a valid POSIX file system, the [md_dir] "
+    echo "argument MUST be set to a valid local posix path on the reader "
+    echo "device. The writer doesn't need this argument."
+
+}
 
 # Parse arguments
 chosen_test="$1" 
@@ -28,32 +64,6 @@ echo "Test directory: $(pwd)"
 if [ -z "$md_dir" ]; then
     md_dir="."
 fi
-
-usage() {
-    echo "Usage: $0 <test> <role> [md_dir]"
-    echo "    <test>: The VFD SWMR test program that we want to test."
-    echo "            Can be one of the following:"
-    echo "            'all', 'attrdset', 'bigset', 'gfail', 'group',"
-    echo "            'group_basic', 'group_attrs', 'os_group_attrs', or 'zoo'."
-    echo "            Note: 'all' runs all tests, 'group' runs all group-related "
-    echo "            tests."
-    echo "    <role>: 'reader' or 'writer' to indicate which role to run."
-    echo "            Also accepts just 'r' or 'w'."
-    echo "    [md_dir]: Optional directory path to place mdfile "
-    echo "              (only for bigset test). "
-    echo ""
-    echo "This script sets up and runs SWMR tests using sockets. It assumes "
-    echo "that you will run the writer and reader roles on separate devices, "
-    echo "using an NFS mount as the current working directory when running "
-    echo "this script. The writer role should be started before the reader "
-    echo "role, to allow the socket connection to establish correctly."
-    echo ""
-    echo "Note: Since the bigset test requires the auxiliary process to "
-    echo "run with access to a valid POSIX file system, the [md_dir] "
-    echo "argument MUST be set to a valid local posix path on the reader "
-    echo "device. The writer doesn't need this argument."
-
-}
 
 if [ -z "$1" ] || [ -z "$2" ] || ( [ "$test_role" != "r" ] && [ "$test_role" != "w" ] ); then
     usage

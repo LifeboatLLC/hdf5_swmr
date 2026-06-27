@@ -10,17 +10,10 @@ RECOVERY_TOOL="$PROJECT_DIR/utils/vfd_swmr/recovery_tool"
 CRASHER_TOOL="$PROJECT_DIR/utils/vfd_swmr/crasher"
 VFD_GENERATOR="$PROJECT_DIR/test/vfd_swmr_generator"
 
-# Functionality exists to run the crash loop for each test with multiple
-#  sets of options. This can take a really long time, so this variable
-#  causes the script to only run the first set of options for each test.
-ONLY_RUN_EACH_TEST_ONCE=true 
-
-
 # Flag for whether we want to only run a single crash recovery using
-#  a specific delay time.
+#  a specific delay time. Use '-d' option to set fixed delay time.
 USE_FIXED_DELAY=false
 FIXED_DELAY=""
-
 
 # Set paths to HDF5 tools
 H5CLEAR="$PROJECT_DIR/install/bin/h5clear"
@@ -28,10 +21,15 @@ H5DUMP="$PROJECT_DIR/install/bin/h5dump"
 H5LS="$PROJECT_DIR/install/bin/h5ls"
 export H5CLEAR_PATH="$H5CLEAR" # for h5clear call within recovery_tool.c
 
-HDF5_NOCLEANUP=1 # Set to a non-empty value to prevent cleanup of output files. 
-
 KEEP_OUTPUT_FILES=false # forces recovery and validation output files to be kept for each iteration.
 VERBOSE=false
+
+# Functionality exists to run the crash loop for each test with multiple
+#  sets of options. This can take a really long time, so this variable
+#  causes the script to only run the first set of options for each test.
+if [[ -z $ONLY_RUN_EACH_TEST_ONCE ]]; then
+    ONLY_RUN_EACH_TEST_ONCE=true 
+fi
 
 ###############################################################################
 # HDF5TestExpress variable controls how exhaustive the tests are.
@@ -227,8 +225,8 @@ keep_output_files() {
     if [ -f "${test_name}_h5clear_pre.out" ]; then
         mv -- "${test_name}_h5clear_pre.out" "${test_name}_h5clear_pre.out.${count}"
     fi
-    if [ -f "h5clear_post.out" ]; then
-        mv -- h5clear_post.out "${test_name}_h5clear_post.out.${count}"
+    if [ -f "recovery_tool_h5clear.out" ]; then
+        mv -- recovery_tool_h5clear.out "${test_name}_h5clear_post.out.${count}"
     fi
 } # keep_output_files()
 
@@ -522,32 +520,45 @@ run_crash_recovery_loop() {
 usage() {
     echo "Usage: $0 [-h] [-d] [-v] [-k] [test1 test2 ...]"
     echo ""
-    echo "Run crash recovery tests for VFD SWMR"
-    echo "For each test iteration, the writer tool will be executed and then crashed after"
-    echo "a specified delay. The HDF5 file will then be recovered using the updater files."
-    echo "The H5LS and H5DUMP utilities will be used both before and after recovery to verify that"
-    echo "the recovery process was successful."
+    echo "Run crash recovery tests for VFD SWMR."
+    echo "For each test iteration, a VFD SWMR writer process is executed and then forcibly"
+    echo "terminated after a specified delay using the crasher utility. The resulting HDF5"
+    echo "state is then recovered using the recovery_tool and validated using H5LS and H5DUMP"
+    echo "before and after recovery to verify correctness of the recovery process."
+    echo ""
+    echo "WARNING: This test script has the potential to write multiple terabytes of data to your"
+    echo "         filesystem. Even if you do not keep the generated files (using the '-k' option),"
+    echo "         the script still performs all writes during each test iteration. The difference"
+    echo "         is that files are deleted after each run, so disk usage does not accumulate, but"
+    echo "         total write volume to the storage device remains the same."
+    echo ""
+    echo "         This may result in significant wear on storage devices and long execution times,"
+    echo "         depending on the number of tests and dataset sizes used, as well as the type of"
+    echo "         storage used (ssd vs hhd)."
     echo ""
     echo "Options:"
     echo "  -h        Show this help message and exit"
     echo "  -d        Choose a specific delay in seconds (e.g. 0.5, 1.1, ...)"
-    echo "              NOTE: A single specific test must be selected with this option."
+    echo "            NOTE: A single specific test must be selected with this option."
     echo "  -v        Enable verbose output"
     echo "  -k        Keep output files from each iteration. Useful for debugging."
-    echo "            WILL GENERATE DOZENS OF FILES."
+    echo "            WILL GENERATE DOZENS, IF NOT HUNDREDS, OF FILES."
+    echo "            THIS MAY CONSUME TERABYTES OF DISK SPACE"
     echo ""
-    echo "Files kept with -k option:"
+    echo "Files preserved when using the -k option:"
     echo "  <test>_recovery.out.<count>            - Recovery tool output and error messages"
     echo "  <test>_h5clear_pre.out.<count>         - H5clear status reset before validation"
     echo "  <test>_h5clear_post.out.<count>        - H5clear status reset after validation"
     echo "  <test>_validation_pre.out.<count>      - File validation before recovery"
     echo "  <test>_validation_post.out.<count>     - File validation after recovery"
-    echo "  <writer_tool>.out.<count>              - Writer tool output and error messages"
+    echo "  <writer>.out.<count>                   - Writer tool output and error messages"
+    echo "  <expected HDF5 file(s)>.<count>        - Generated HDF5 files, including the base file"
+    echo "                                            and derived variants (<name>_a.h5, <name>_b.h5)"
+    echo "  Where:"
+    echo "   - <test> is the test name (standard, bigset, sparse, or remove)"
+    echo "   - <count> is the iteration number"
+    echo "   - <writer> is the name of the actual writer program used in the test."
     echo ""
-    echo "  Where <test> is the test name (standard, bigset, sparse, or remove), <count> is the iteration number"
-    echo "  and <writer_tool> is the name of the actual writer program used in the test."
-    echo ""
-    echo "  NOTE: a single test goes through dozens of iterations, so a large number of files will be created."
     echo ""
     echo "Tests:"
     echo "  standard  Run standard writer crash test (vfd_swmr_writer)"
@@ -562,6 +573,7 @@ usage() {
     echo "  $0                    # Run all tests"
     echo "  $0 -v -k standard     # Run standard test with verbose output and keep files"
     echo "  $0 bigset sparse      # Run only bigset and sparse tests"
+    echo "  $0 -d 0.5 bigset      # Run a single crash test for bigset with 0.5s delay"
     echo ""
 } # usage()
 

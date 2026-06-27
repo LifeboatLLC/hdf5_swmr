@@ -1499,7 +1499,7 @@ reset_status_flags(handler_t *hand)
     // char h5clear_opts[] = "--status --increment";
     /* Execute h5clear command*/
     char *cmd_argv[] = {hand->h5clear_path, h5clear_opts, hand->h5_file_path, NULL};
-    int ret = run_command_with_catch("h5clear_post", cmd_argv);
+    int ret = run_command_with_catch("recovery_tool_h5clear", cmd_argv);
     
     if (ret < 0) {
         fprintf(stderr, "error: Failed to run h5clear command\n");
