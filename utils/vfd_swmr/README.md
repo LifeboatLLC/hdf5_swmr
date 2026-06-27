@@ -283,7 +283,10 @@ Can be one of the following:
 'reader' or 'writer' to indicate which role to run.  
 Also accepts just 'r' or 'w'.
 
+- `[md_dir]`  
+Optional directory path to place the metadata file (only for bigset test).
+
 ### Additional Information
 The writer and reader roles should be started on separate systems, with the writer started first so that the socket connection can be established correctly.
 
-For the `bigset` test, the auxiliary process must create the external metadata file on a local POSIX filesystem. Therefore, when running the reader, [md_dir] must specify a valid local POSIX directory. This argument is ignored by the writer.
+For the `bigset` test, the auxiliary process must create the external metadata file on a local POSIX filesystem. Therefore, when running the reader, `[md_dir]` must specify a valid local POSIX directory. This argument is ignored by the writer.
