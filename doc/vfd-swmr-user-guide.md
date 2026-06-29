@@ -19,7 +19,7 @@ the HDF5 file so as to always maintain a consistent view of metadata
 in the HDF5 file -- which requires SWMR specific modifications to 
 all code that maintains on disk metadata. For more information, and specifically, 
 for the limitations of the original SWMR, see
- [Introduction to Single-Writer/Multiple-Reader (SWMR)](https://https://support.hdfgroup.org/documentation/hdf5/latest/_s_w_m_r_t_n.html)
+ [Introduction to Single-Writer/Multiple-Reader (SWMR)](https://support.hdfgroup.org/documentation/hdf5/latest/_s_w_m_r_t_n.html))
 
 VFD SWMR is designed to address the limitations of the initial SWMR implemtation and 
 be a more maintainable.  It functions by taking 
