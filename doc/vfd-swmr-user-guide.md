@@ -178,9 +178,9 @@ usage: vfd_swmr_bigset_writer [-F] [-M] [-S] [-V] [-W] [-a steps] [-b] [-c cols]
 ## The VFD SWMR demos
 
 The VFD SWMR demos are located in the `examples` directory of this source
-tree. Instructions for building the example programs are given in the README
+tree. Instructions for building the example programs are given in the README.md
 file in that directory. These programs are NOT installed via `make install`
-and have to built by hand with h5cc as described in the README.
+and have to built by hand with h5cc as described in the README.md file.
 
 Two Gaussian programs are built, `wgaussians` and `rgaussians`.  If you start
 both from the same directory in different terminals, you should see the
@@ -189,9 +189,12 @@ uses curses, so you may need to install the curses developers library to build
 (and this is probably not going to be easy to build on Windows).
 
 The creation-deletion (`credel`) demo is also run in two terminals.
-The two command lines are given in the README. You need to use the `h5ls`
-installed from the VFD SWMR branch, since only that version has the `--poll`
-option. Be careful to not use a non-VFD-SWMR system h5ls here.
+The two command lines are given in the README.md file. You may use 'h5dump' or`h5ls`
+installed from the VFD SWMR branch. 'h5ls' has the `--poll` option allowing the tool
+to constantly poll the file. 
+
+Be careful to not use a non-VFD-SWMR system command-line tools that may be installed on your system when displaying 
+the content of the file created with VFD SWMR.
 
 # Developer tips
 
