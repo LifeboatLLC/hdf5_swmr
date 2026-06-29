@@ -189,7 +189,7 @@ uses curses, so you may need to install the curses developers library to build
 (and this is probably not going to be easy to build on Windows).
 
 The creation-deletion (`credel`) demo is also run in two terminals.
-The two command lines are given in the README.md file. You may use 'h5dump' or`h5ls`
+The two command lines are given in the README.md file. You may use `h5dump` or`h5ls`
 installed from the VFD SWMR branch. 'h5ls' has the `--poll` option allowing the tool
 to constantly poll the file. 
 
