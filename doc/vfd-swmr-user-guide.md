@@ -1,7 +1,7 @@
 # VFD SWMR User's Guide 
 
-**This document describes VFD SWMR prototype that is currently 
-available in the HDF5 GitHub repository [feature branch](https://github.com/LifeboatLLC/hdf5_swmr.git).**
+**This document describes VFD SWMR implemntation that is currently 
+available in the Lifeboat HDF5 GitHub repository [feature branch](https://github.com/LifeboatLLC/hdf5_swmr.git).**
 
 SWMR, which stands for Single Writer/Multiple Reader access mode, is a feature
 of the HDF5 library that lets a process write data to an HDF5 file
