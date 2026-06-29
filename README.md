@@ -22,7 +22,7 @@ For description of VFD SWMR, installation instructions and usage on POSIX and NF
 Limitations:
 
 - The VFD SWMR tests were not ported to Windows platforms.
-- Limited testing: the distrucbition was tested on only on Linux and macOS platforms with gcc and clang compilers.
+- Limited testing: the distrucbition was tested only on Linux and macOS platforms with gcc and clang compilers.
 - VFD SWMR and recovery tool tests have to be run manually.
 
 Contact info@lifeboat.llc if you need help with the configurable VFD SWMR and recovery tool, or if you have questions or suggestions.
