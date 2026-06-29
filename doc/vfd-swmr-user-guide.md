@@ -178,7 +178,7 @@ usage: vfd_swmr_bigset_writer [-F] [-M] [-S] [-V] [-W] [-a steps] [-b] [-c cols]
 ## The VFD SWMR demos
 
 The VFD SWMR demos are located in the `examples` directory of this source
-tree. Instructions for building the example programs are given in the README.md
+tree. Instructions for building the example programs are given in the [README.md] (../examples/README.md)
 file in that directory. These programs are NOT installed via `make install`
 and have to built by hand with h5cc as described in the README.md file.
 
