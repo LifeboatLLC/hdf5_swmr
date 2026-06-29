@@ -196,7 +196,7 @@ to constantly poll the file.
 Be careful to not use a non-VFD-SWMR system command-line tools that may be installed on your system when displaying 
 the content of the file created with VFD SWMR.
 
-# Developer tips
+# Usage
 
 ## Configuring VFD SWMR
 
