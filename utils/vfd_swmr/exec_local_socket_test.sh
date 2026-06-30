@@ -91,8 +91,10 @@ configure_test_env() {
             aux_proc_cmd="" # No aux process for attrdset test
             generated_files="vfd_swmr_attrdset.h5 attrdset-shadow"
 
+            config_file=""
+
             # configuration file path for HDF5_VFD_SWMR_CONFIG env variable
-            config_file="${PROJECT_DIR}/test/vfd_swmr_attrdset_config.txt"
+            # config_file="${PROJECT_DIR}/test/vfd_swmr_attrdset_config.txt"
             ;;
         bigset)
             # Reconstructed options from test_vfd_swmr.sh's "bigset" tests
