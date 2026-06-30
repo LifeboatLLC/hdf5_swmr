@@ -19,7 +19,7 @@
 #include "h5test.h"
 #include "H5CLpkg.h"
 #include "H5Epkg.h"
-#include "H5Fprivate.h"
+#include "H5Pprivate.h"
 
 
 /* 
@@ -51,7 +51,7 @@ static int vfd_swmr_test_verify_config(H5F_vfd_swmr_config_t *input_config, H5F_
                                        bool verbose);
 #if VERIFY_ERROR_STACK_SUPPORTED
 static int cl_test_verify_error_stack(hid_t maj_num, hid_t min_num, const char *desc, bool verbose);
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
 /* test functions */
 static herr_t cl_lexer_smoke_check(void);
@@ -730,7 +730,7 @@ cl_test_verify_error_stack(hid_t maj_num, hid_t min_num, const char *desc, bool 
     return(failures);
 
 } /* cl_test_verify_error_stack() */
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
 /*******************************************************************************
  *
@@ -1256,7 +1256,7 @@ cl_lexer_error_check_1(void)
     const char * input_string = "* /* a comment */&/*another comment */    _=% {}[]\"unterminated string";
 #if VERIFY_ERROR_STACK_SUPPORTED
     bool verbose = true;
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
     H5CL_token_t * token_ptr;
     H5CL_lex_vars_t lex_vars = {
         /* struct_tag        = */ H5CL_LEX_VARS_STRUCT_TAG,
@@ -1316,7 +1316,7 @@ cl_lexer_error_check_1(void)
 
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
     /* should fail on illegal char '&' */
     if ( H5CL__lex_read_token(false, false, &token_ptr, &lex_vars) >= 0 ) {
 
@@ -1330,7 +1330,7 @@ cl_lexer_error_check_1(void)
 
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
     /* should fail on illegal char '_' */
     if ( H5CL__lex_read_token(false, false, &token_ptr, &lex_vars) >= 0 ) {
 
@@ -1344,7 +1344,7 @@ cl_lexer_error_check_1(void)
 
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
     /* should fail on illegal char '=' */
     if ( H5CL__lex_read_token(false, false, &token_ptr, &lex_vars) >= 0 ) {
 
@@ -1358,7 +1358,7 @@ cl_lexer_error_check_1(void)
 
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
     /* should fail on illegal char '%' */
     if ( H5CL__lex_read_token(false, false, &token_ptr, &lex_vars) >= 0 ) {
@@ -1373,7 +1373,7 @@ cl_lexer_error_check_1(void)
 
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
     /* should fail on illegal char '{' */
     if ( H5CL__lex_read_token(false, false, &token_ptr, &lex_vars) >= 0 ) {
@@ -1388,7 +1388,7 @@ cl_lexer_error_check_1(void)
 
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
     /* should fail on illegal char '}' */
     if ( H5CL__lex_read_token(false, false, &token_ptr, &lex_vars) >= 0 ) {
@@ -1403,7 +1403,7 @@ cl_lexer_error_check_1(void)
 
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
     /* should fail on illegal char '[' */
     if ( H5CL__lex_read_token(false, false, &token_ptr, &lex_vars) >= 0 ) {
 
@@ -1417,7 +1417,7 @@ cl_lexer_error_check_1(void)
 
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
     /* should fail on illegal char ']' */
     if ( H5CL__lex_read_token(false, false, &token_ptr, &lex_vars) >= 0 ) {
@@ -1432,7 +1432,7 @@ cl_lexer_error_check_1(void)
 
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
     /* should fail on an unterminated string' */
     if ( H5CL__lex_read_token(false, false, &token_ptr, &lex_vars) >= 0 ) {
@@ -1447,7 +1447,7 @@ cl_lexer_error_check_1(void)
 
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
     PASSED();
 
@@ -1480,7 +1480,7 @@ cl_lexer_error_check_2(void)
     const char * input_string = "/* malformed numeric values */ + - . +. -. (an unterminated list";
 #if VERIFY_ERROR_STACK_SUPPORTED
     bool verbose = true;
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
     H5CL_token_t * token_ptr;
     H5CL_lex_vars_t lex_vars = {
         /* struct_tag        = */ H5CL_LEX_VARS_STRUCT_TAG,
@@ -1539,7 +1539,7 @@ cl_lexer_error_check_2(void)
 
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
     /* should fail on an ill formed numeric constantt */
     if  ( H5CL__lex_read_token(true, false, &token_ptr, &lex_vars) >= 0 ) {
@@ -1554,7 +1554,7 @@ cl_lexer_error_check_2(void)
 
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
     /* should fail on an ill formed numeric constantt */
     if  ( H5CL__lex_read_token(true, false, &token_ptr, &lex_vars) >= 0 ) {
@@ -1570,7 +1570,7 @@ cl_lexer_error_check_2(void)
 
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
     /* should fail on an ill formed numeric constantt */
     if  ( H5CL__lex_read_token(true, false, &token_ptr, &lex_vars) >= 0 ) {
@@ -1585,7 +1585,7 @@ cl_lexer_error_check_2(void)
 
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
     /* should fail on an ill formed numeric constantt */
     if  ( H5CL__lex_read_token(true, false, &token_ptr, &lex_vars) >= 0 ) {
@@ -1600,7 +1600,7 @@ cl_lexer_error_check_2(void)
 
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
     /* should fail on na unterminate list */
     if  ( H5CL__lex_read_token(true, false, &token_ptr, &lex_vars) >= 0 ) {
@@ -1615,7 +1615,7 @@ cl_lexer_error_check_2(void)
 
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
     PASSED();
 
@@ -1648,7 +1648,7 @@ cl_lexer_error_check_3(void)
     const char * input_string = " /* an empty input string to generate an unexpected EOI error */";
 #if VERIFY_ERROR_STACK_SUPPORTED
     bool verbose = true;
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
     H5CL_token_t * token_ptr;
     H5CL_lex_vars_t lex_vars = {
         /* struct_tag        = */ H5CL_LEX_VARS_STRUCT_TAG,
@@ -1708,7 +1708,7 @@ cl_lexer_error_check_3(void)
 
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
     PASSED();
 
@@ -1741,7 +1741,7 @@ cl_lexer_error_check_4(void)
     const char * input_string = " /* end of input in a comment ";
 #if VERIFY_ERROR_STACK_SUPPORTED
     bool verbose = true;
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
     H5CL_token_t * token_ptr;
     H5CL_lex_vars_t lex_vars = {
         /* struct_tag        = */ H5CL_LEX_VARS_STRUCT_TAG,
@@ -1801,7 +1801,7 @@ cl_lexer_error_check_4(void)
 
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
     PASSED();
 
@@ -1980,7 +1980,7 @@ cl_parse_nv_pair_error_check_1(void)
     const char * input_string = "name 1 ) /* NV pair missing the opening paren */";
 #if VERIFY_ERROR_STACK_SUPPORTED
     bool verbose = true;
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
     H5CL_lex_vars_t lex_vars = {
         /* struct_tag        = */ H5CL_LEX_VARS_STRUCT_TAG,
         /* input_str_ptr     = */ NULL,
@@ -2045,7 +2045,7 @@ cl_parse_nv_pair_error_check_1(void)
 
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
     PASSED();
 
@@ -2078,7 +2078,7 @@ cl_parse_nv_pair_error_check_2(void)
     const char * input_string = "( /* NV pair missing the name */ 1 --01020304 )";
 #if VERIFY_ERROR_STACK_SUPPORTED
     bool verbose = true;
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
     H5CL_lex_vars_t lex_vars = {
         /* struct_tag        = */ H5CL_LEX_VARS_STRUCT_TAG,
         /* input_str_ptr     = */ NULL,
@@ -2143,7 +2143,7 @@ cl_parse_nv_pair_error_check_2(void)
 
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
     PASSED();
 
@@ -2177,7 +2177,7 @@ cl_parse_nv_pair_error_check_3(void)
     const char * input_string = "( name /* NV pair missing the value */ )";
 #if VERIFY_ERROR_STACK_SUPPORTED
     bool verbose = true;
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
     H5CL_lex_vars_t lex_vars = {
         /* struct_tag        = */ H5CL_LEX_VARS_STRUCT_TAG,
         /* input_str_ptr     = */ NULL,
@@ -2242,7 +2242,7 @@ cl_parse_nv_pair_error_check_3(void)
 
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
     PASSED();
 
@@ -2276,7 +2276,7 @@ cl_parse_nv_pair_error_check_4(void)
     const char * input_string = "( name 1.1 /* NV pair with extra value */ --01020304 )";
 #if VERIFY_ERROR_STACK_SUPPORTED
     bool verbose = true;
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
     H5CL_lex_vars_t lex_vars = {
         /* struct_tag        = */ H5CL_LEX_VARS_STRUCT_TAG,
         /* input_str_ptr     = */ NULL,
@@ -2341,7 +2341,7 @@ cl_parse_nv_pair_error_check_4(void)
 
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
     PASSED();
 
@@ -2375,7 +2375,7 @@ cl_parse_nv_pair_error_check_5(void)
     const char * input_string = "( name \" unterminated quote string ";
 #if VERIFY_ERROR_STACK_SUPPORTED
     bool verbose = true;
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
     H5CL_lex_vars_t lex_vars = {
         /* struct_tag        = */ H5CL_LEX_VARS_STRUCT_TAG,
         /* input_str_ptr     = */ NULL,
@@ -2440,7 +2440,7 @@ cl_parse_nv_pair_error_check_5(void)
 
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
     PASSED();
 
@@ -2474,7 +2474,7 @@ cl_parse_nv_pair_error_check_6(void)
     const char * input_string = "( name ( unterminated list ";
 #if VERIFY_ERROR_STACK_SUPPORTED
     bool verbose = true;
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
     H5CL_lex_vars_t lex_vars = {
         /* struct_tag        = */ H5CL_LEX_VARS_STRUCT_TAG,
         /* input_str_ptr     = */ NULL,
@@ -2539,7 +2539,7 @@ cl_parse_nv_pair_error_check_6(void)
 
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
     PASSED();
 
@@ -2573,7 +2573,7 @@ cl_parse_nv_pair_error_check_7(void)
     const char * input_string = "( name 3.14159 /* unexpected EOI */ ";
 #if VERIFY_ERROR_STACK_SUPPORTED
     bool verbose = true;
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
     H5CL_lex_vars_t lex_vars = {
         /* struct_tag        = */ H5CL_LEX_VARS_STRUCT_TAG,
         /* input_str_ptr     = */ NULL,
@@ -2638,7 +2638,7 @@ cl_parse_nv_pair_error_check_7(void)
 
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
     PASSED();
 
@@ -2845,7 +2845,7 @@ cl_parse_name_val_pair_list_err_check_1(void)
 {
 #if VERIFY_ERROR_STACK_SUPPORTED
     bool verbose = true;
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
     int nv_pair_num = 0;
     const char * input_string = " ( name_0 1 ) ( name_1 3.14159 ) ( name_2 \"Hello World\" ) "
                                 "( name_3 --10111213 ) ( name_4 ( sec2 () ) ) )";
@@ -2917,7 +2917,7 @@ cl_parse_name_val_pair_list_err_check_1(void)
 
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
 
     if ( H5CL__take_down_lex_vars(&lex_vars) < 0 )
@@ -2963,7 +2963,7 @@ cl_parse_name_val_pair_list_err_check_2(void)
 {
 #if VERIFY_ERROR_STACK_SUPPORTED
     bool verbose = true;
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
     int nv_pair_num = 0;
     const char * input_string = "  name_0 1 ) ( name_1 3.14159 ) ( name_2 \"Hello World\" ) "
                                 "( name_3 --10111213 ) ( name_4 ( sec2 () ) ) )";
@@ -3035,8 +3035,7 @@ cl_parse_name_val_pair_list_err_check_2(void)
 
         TEST_ERROR;
     }
-#endif
-
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
     if ( H5CL__take_down_lex_vars(&lex_vars) < 0 )
         TEST_ERROR;
@@ -3081,7 +3080,7 @@ cl_parse_name_val_pair_list_err_check_3(void)
 {
 #if VERIFY_ERROR_STACK_SUPPORTED
     bool verbose = true;
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
     int nv_pair_num = 0;
     const char * input_string = "( ( name_3 --10111213- ) ( name_4 ( sec2 () ) ) )";
     H5CL_nv_pair_t actual_nv_pairs[5];
@@ -3152,7 +3151,7 @@ cl_parse_name_val_pair_list_err_check_3(void)
 
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
     if ( H5CL__take_down_lex_vars(&lex_vars) < 0 )
         TEST_ERROR;
@@ -4140,15 +4139,15 @@ cl_parse_config_group_err_check_1(void){
         "    )"
         "  )"
         ")";
+#if VERIFY_ERROR_STACK_SUPPORTED
+    bool verbose = true;
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
     int i;
     int j;
     int num_configs = 3;
     int duplicate_1_num_params = 1;
     int normal_num_params = 1;
     int duplicate_2_num_params = 1;
-#if VERIFY_ERROR_STACK_SUPPORTED
-    bool verbose = true;
-#endif
     char top_name[] = "top_name";
     char duplicate_name[] = "duplicate_name";
     char normal_name[] = "normal_name";
@@ -4216,7 +4215,7 @@ cl_parse_config_group_err_check_1(void){
 
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
     /* cleanup after test. */
     for ( i = 0; i < num_configs; i++ ) {
@@ -4276,7 +4275,7 @@ cl_parse_config_group_err_check_2(void){
         ")";
 #if VERIFY_ERROR_STACK_SUPPORTED
     bool verbose = true;
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
     int i;
     int j;
     int num_configs = 2;
@@ -4336,7 +4335,7 @@ cl_parse_config_group_err_check_2(void){
 
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
     /* cleanup after test. */
     /* Don't try to clean up nv pairs that H5CL_parse_config_group() didn't initialize */
@@ -4395,7 +4394,7 @@ cl_parse_config_group_err_check_3(void){
         ")";
 #if VERIFY_ERROR_STACK_SUPPORTED
     bool verbose = true;
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
     int i;
     int j;
     int num_configs = 1;
@@ -4436,7 +4435,7 @@ cl_parse_config_group_err_check_3(void){
 
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
     /* cleanup after test. */
     for ( i = 0; i < num_configs; i++ ) {
@@ -4492,7 +4491,7 @@ cl_parse_config_group_err_check_4(void){
         ")";
 #if VERIFY_ERROR_STACK_SUPPORTED
     bool verbose = true;
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
     int i;
     int j;
     int num_configs = 1;
@@ -4536,7 +4535,7 @@ cl_parse_config_group_err_check_4(void){
 
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
     /* Now set the config's expected name to wrong_name and retry with the correct top-level name */
     configs[0].config_name = wrong_name;
@@ -4552,7 +4551,7 @@ cl_parse_config_group_err_check_4(void){
 
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
     /* cleanup after test. */
     for ( i = 0; i < num_configs; i++ ) {
@@ -4598,7 +4597,7 @@ cl_parse_config_group_err_check_5(void){
     const char * input_string = "( top_name 1 )"; /* value isnt a list */
 #if VERIFY_ERROR_STACK_SUPPORTED
     bool verbose = true;
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
     int i;
     int j;
     int num_configs = 1;
@@ -4640,7 +4639,7 @@ cl_parse_config_group_err_check_5(void){
 
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
     /* cleanup after test. */
     for ( i = 0; i < num_configs; i++ ) {
@@ -4691,7 +4690,7 @@ cl_parse_config_group_err_check_6(void){
         ")";
 #if VERIFY_ERROR_STACK_SUPPORTED
     bool verbose = true;
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
     int i;
     int j;
     int num_configs = 1;
@@ -4733,7 +4732,7 @@ cl_parse_config_group_err_check_6(void){
 
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
     /* cleanup after test. */
     for ( i = 0; i < num_configs; i++ ) {
@@ -4789,7 +4788,7 @@ cl_parse_config_group_err_check_7(void){
         ")";
 #if VERIFY_ERROR_STACK_SUPPORTED
     bool verbose = true;
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
     int i;
     int j;
     int num_configs = 2;
@@ -4849,7 +4848,7 @@ cl_parse_config_group_err_check_7(void){
 
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
     /* cleanup after test. */
     for ( i = 0; i < num_configs; i++ ) {
@@ -4879,7 +4878,7 @@ error:
  *
  * vfd_swmr_load_string_config_smoke_check()
  *
- * Initial smoke check for the H5F_load_swmr_config_from_string() function.
+ * Initial smoke check for the H5Fswmr_config_string() function.
  * Note that this test does not trigger any errors in that function.
  *
  *                                              Cody S. -- 4/28/26
@@ -4984,7 +4983,7 @@ vfd_swmr_load_string_config_smoke_check(void)
     }
     HDmemset(actual_config, 0, sizeof(H5F_vfd_swmr_config_t));
 
-    TESTING("H5F_load_swmr_config_from_string() -- Initial Smoke Check");
+    TESTING("H5Fswmr_config_string() -- Initial Smoke Check");
 
     /* Initialize property lists */
     if ( (fapl = h5_fileaccess()) < 0 )
@@ -4993,7 +4992,7 @@ vfd_swmr_load_string_config_smoke_check(void)
         TEST_ERROR;
 
     /* Use cl string to setup property lists */
-    if ( H5F_load_swmr_config_from_string(input_string, fapl, fcpl, writer, create_file) < 0 )
+    if ( H5Fswmr_config_string(input_string, fapl, fcpl, writer, create_file) < 0 )
         TEST_ERROR;
 
     /* Get configured values */
@@ -5063,7 +5062,7 @@ error:
  *
  * Verify that the VFD SWMR property list setup function detects and reports 
  * errors as expected.
- * Specifically, test that H5F_load_swmr_config_from_string() errors when
+ * Specifically, test that H5Fswmr_config_string() errors when
  * create_file parameter is TRUE but writer parameter is FALSE.
  *
  *                                              Cody S. -- 4/30/26
@@ -5119,22 +5118,30 @@ vfd_swmr_load_string_config_err_check_1(void)
     hid_t   fcpl        = H5I_INVALID_HID;
     hbool_t writer      = false;
     hbool_t create_file = true;
+    herr_t  result;
 #if VERIFY_ERROR_STACK_SUPPORTED    
     bool    verbose     = true;
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
-    TESTING("H5F_load_swmr_config_from_string() err detect 1");
+    TESTING("H5Fswmr_config_string() err detect 1");
 
     /* Initialize property lists */
     if ( (fapl = h5_fileaccess()) < 0 )
         TEST_ERROR;
     if ( (fcpl = H5Pcreate(H5P_FILE_CREATE)) < 0 )
         TEST_ERROR;
-
+    
     /* Expected to fail because writer is false but create_file is true */
-    if ( H5F_load_swmr_config_from_string(input_string, fapl, fcpl, writer, create_file) >= 0 ) {
-       TEST_ERROR;
-    } 
+    H5E_BEGIN_TRY
+    {
+        result =  H5Fswmr_config_string(input_string, fapl, fcpl, writer, create_file);
+    }
+    H5E_END_TRY
+
+    if ( result >= 0 ) 
+    {
+        TEST_ERROR;
+    }
 #if VERIFY_ERROR_STACK_SUPPORTED    
     else if ( 0 != cl_test_verify_error_stack(H5E_ARGS, H5E_BADVALUE, 
                                               "must be in writer mode to create file",
@@ -5142,7 +5149,7 @@ vfd_swmr_load_string_config_err_check_1(void)
     {
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
     /* Close property lists */
     if ( H5Pclose(fapl) < 0 )
@@ -5169,7 +5176,7 @@ error:
  *
  * Verify that the VFD SWMR property list setup function detects and reports 
  * errors as expected.
- * Specifically, test that H5F_load_swmr_config_from_string() errors when
+ * Specifically, test that H5Fswmr_config_string() errors when
  * required configs are missing.
  *
  *                                              Cody S. -- 4/30/26
@@ -5268,11 +5275,12 @@ vfd_swmr_load_string_config_err_check_2(void)
     hid_t   fcpl        = H5I_INVALID_HID;
     hbool_t writer      = true;
     hbool_t create_file = true;
+    herr_t  result;
 #if VERIFY_ERROR_STACK_SUPPORTED
     bool    verbose     = true;
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
-    TESTING("H5F_load_swmr_config_from_string() err detect 2");
+    TESTING("H5Fswmr_config_string() err detect 2");
 
     /* Initialize property lists */
     if ( (fapl = h5_fileaccess()) < 0 )
@@ -5281,12 +5289,16 @@ vfd_swmr_load_string_config_err_check_2(void)
         TEST_ERROR;
 
     /* Expected to fail because H5F_vfd_swmr_config missing */
-    if ( H5F_load_swmr_config_from_string(missing_H5F_vfd_swmr_config_str, 
-                                              fapl, fcpl, writer, 
-                                              create_file) >= 0 )
+    H5E_BEGIN_TRY
     {
-       TEST_ERROR;
-    } 
+        result =  H5Fswmr_config_string(missing_H5F_vfd_swmr_config_str, fapl, fcpl, writer, create_file);
+    }
+    H5E_END_TRY
+
+    if ( result >= 0 ) 
+    {
+        TEST_ERROR;
+    }
 #if VERIFY_ERROR_STACK_SUPPORTED    
     else if ( 0 != cl_test_verify_error_stack(H5E_ARGS, H5E_BADVALUE, 
                                               "required configuration groups missing",
@@ -5294,15 +5306,19 @@ vfd_swmr_load_string_config_err_check_2(void)
     {
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
     /* Expected to fail because page_buffer_config missing */
-    if ( H5F_load_swmr_config_from_string(missing_page_buffer_config_str,
-                                              fapl, fcpl, writer, 
-                                              create_file) >= 0 )
+    H5E_BEGIN_TRY
     {
-       TEST_ERROR;
-    } 
+        result =  H5Fswmr_config_string(missing_page_buffer_config_str, fapl, fcpl, writer, create_file);
+    }
+    H5E_END_TRY
+
+    if ( result >= 0 ) 
+    {
+        TEST_ERROR;
+    }
 #if VERIFY_ERROR_STACK_SUPPORTED    
     else if ( 0 != cl_test_verify_error_stack(H5E_ARGS, H5E_BADVALUE, 
                                               "required configuration groups missing",
@@ -5310,12 +5326,16 @@ vfd_swmr_load_string_config_err_check_2(void)
     {
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
     /* Expected to fail because create_file is true but file_space configurations missing */
-    if ( H5F_load_swmr_config_from_string(missing_file_space_str, 
-                                              fapl, fcpl, writer, 
-                                              create_file) >= 0 )
+    H5E_BEGIN_TRY
+    {
+        result =  H5Fswmr_config_string(missing_file_space_str, fapl, fcpl, writer, create_file);
+    }
+    H5E_END_TRY
+
+    if ( result >= 0 ) 
     {
         TEST_ERROR;
     }
@@ -5326,7 +5346,7 @@ vfd_swmr_load_string_config_err_check_2(void)
     {
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
     /* Close property lists */
     if ( H5Pclose(fapl) < 0 )
@@ -5354,7 +5374,7 @@ error:
  *
  * Verify that the VFD SWMR property list setup function detects and reports 
  * errors as expected.
- * Specifically, test that H5F_load_swmr_config_from_string() errors when
+ * Specifically, test that H5Fswmr_config_string() errors when
  * any of the required configuration paramaters are missing.
  * 
  *                                              Cody S. -- 4/30/26
@@ -5714,11 +5734,12 @@ vfd_swmr_load_string_config_err_check_3(void)
     hid_t   fcpl        = H5I_INVALID_HID;
     hbool_t writer      = true;
     hbool_t create_file = true;
+    herr_t  result;
 #if VERIFY_ERROR_STACK_SUPPORTED
     bool    verbose     = true;
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
-    TESTING("H5F_load_swmr_config_from_string() err detect 3");
+    TESTING("H5Fswmr_config_string() err detect 3");
 
     /* Initialize property lists */
     if ( (fapl = h5_fileaccess()) < 0 )
@@ -5726,10 +5747,16 @@ vfd_swmr_load_string_config_err_check_3(void)
     if ( (fcpl = H5Pcreate(H5P_FILE_CREATE)) < 0 )
         TEST_ERROR;
 
+    H5E_BEGIN_TRY
+    {
+        result =  H5Fswmr_config_string(missing_tick_len_str, fapl, fcpl, writer, create_file);
+    }
+    H5E_END_TRY
 
-    if ( H5F_load_swmr_config_from_string(missing_tick_len_str, fapl, fcpl, writer, create_file) >= 0 ) {
-       TEST_ERROR;
-    } 
+    if ( result >= 0 ) 
+    {
+        TEST_ERROR;
+    }
 #if VERIFY_ERROR_STACK_SUPPORTED    
     else if ( 0 != cl_test_verify_error_stack(H5E_ARGS, H5E_BADVALUE, 
                                               "missing required parameter: tick_len",
@@ -5737,11 +5764,18 @@ vfd_swmr_load_string_config_err_check_3(void)
     {
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
-    if ( H5F_load_swmr_config_from_string(missing_max_lag_str, fapl, fcpl, writer, create_file) >= 0 ) {
-       TEST_ERROR;
-    } 
+    H5E_BEGIN_TRY
+    {
+        result =  H5Fswmr_config_string(missing_max_lag_str, fapl, fcpl, writer, create_file);
+    }
+    H5E_END_TRY
+
+    if ( result >= 0 ) 
+    {
+        TEST_ERROR;
+    }
 #if VERIFY_ERROR_STACK_SUPPORTED    
     else if ( 0 != cl_test_verify_error_stack(H5E_ARGS, H5E_BADVALUE, 
                                               "missing required parameter: max_lag",
@@ -5749,11 +5783,18 @@ vfd_swmr_load_string_config_err_check_3(void)
     {
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
-    if ( H5F_load_swmr_config_from_string(missing_maintain_md_file_str, fapl, fcpl, writer, create_file) >= 0 ) {
-       TEST_ERROR;
-    } 
+    H5E_BEGIN_TRY
+    {
+        result =  H5Fswmr_config_string(missing_maintain_md_file_str, fapl, fcpl, writer, create_file);
+    }
+    H5E_END_TRY
+
+    if ( result >= 0 ) 
+    {
+        TEST_ERROR;
+    }
 #if VERIFY_ERROR_STACK_SUPPORTED    
     else if ( 0 != cl_test_verify_error_stack(H5E_ARGS, H5E_BADVALUE, 
                                               "missing required parameter: maintain_metadata_file",
@@ -5761,11 +5802,18 @@ vfd_swmr_load_string_config_err_check_3(void)
     {
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
     
-    if ( H5F_load_swmr_config_from_string(missing_gen_updater_files_str, fapl, fcpl, writer, create_file) >= 0 ) {
-       TEST_ERROR;
-    } 
+    H5E_BEGIN_TRY
+    {
+        result =  H5Fswmr_config_string(missing_gen_updater_files_str, fapl, fcpl, writer, create_file);
+    }
+    H5E_END_TRY
+
+    if ( result >= 0 ) 
+    {
+        TEST_ERROR;
+    }
 #if VERIFY_ERROR_STACK_SUPPORTED    
     else if ( 0 != cl_test_verify_error_stack(H5E_ARGS, H5E_BADVALUE, 
                                               "missing required parameter: generate_updater_file",
@@ -5773,11 +5821,18 @@ vfd_swmr_load_string_config_err_check_3(void)
     {
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
     
-    if ( H5F_load_swmr_config_from_string(missing_md_pages_reserved_str, fapl, fcpl, writer, create_file) >= 0 ) {
-       TEST_ERROR;
-    } 
+    H5E_BEGIN_TRY
+    {
+        result =  H5Fswmr_config_string(missing_md_pages_reserved_str, fapl, fcpl, writer, create_file);
+    }
+    H5E_END_TRY
+
+    if ( result >= 0 ) 
+    {
+        TEST_ERROR;
+    }
 #if VERIFY_ERROR_STACK_SUPPORTED    
     else if ( 0 != cl_test_verify_error_stack(H5E_ARGS, H5E_BADVALUE, 
                                               "missing required parameter: md_pages_reserved",
@@ -5785,11 +5840,18 @@ vfd_swmr_load_string_config_err_check_3(void)
     {
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
     
-    if ( H5F_load_swmr_config_from_string(missing_page_buf_size_str, fapl, fcpl, writer, create_file) >= 0 ) {
-       TEST_ERROR;
-    } 
+    H5E_BEGIN_TRY
+    {
+        result =  H5Fswmr_config_string(missing_page_buf_size_str, fapl, fcpl, writer, create_file);
+    }
+    H5E_END_TRY
+
+    if ( result >= 0 ) 
+    {
+        TEST_ERROR;
+    }
 #if VERIFY_ERROR_STACK_SUPPORTED    
     else if ( 0 != cl_test_verify_error_stack(H5E_ARGS, H5E_BADVALUE, 
                                               "missing required parameter: page_buf_size",
@@ -5797,11 +5859,18 @@ vfd_swmr_load_string_config_err_check_3(void)
     {
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
     
-    if ( H5F_load_swmr_config_from_string(missing_md_pages_only_str, fapl, fcpl, writer, create_file) >= 0 ) {
-       TEST_ERROR;
-    } 
+    H5E_BEGIN_TRY
+    {
+        result =  H5Fswmr_config_string(missing_md_pages_only_str, fapl, fcpl, writer, create_file);
+    }
+    H5E_END_TRY
+
+    if ( result >= 0 ) 
+    {
+        TEST_ERROR;
+    }
 #if VERIFY_ERROR_STACK_SUPPORTED    
     else if ( 0 != cl_test_verify_error_stack(H5E_ARGS, H5E_BADVALUE, 
                                               "missing required parameter: metadata_pages_only",
@@ -5809,11 +5878,18 @@ vfd_swmr_load_string_config_err_check_3(void)
     {
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
-    if ( H5F_load_swmr_config_from_string(missing_persist_str, fapl, fcpl, writer, create_file) >= 0 ) {
-       TEST_ERROR;
-    } 
+    H5E_BEGIN_TRY
+    {
+        result =  H5Fswmr_config_string(missing_persist_str, fapl, fcpl, writer, create_file);
+    }
+    H5E_END_TRY
+
+    if ( result >= 0 ) 
+    {
+        TEST_ERROR;
+    }
 #if VERIFY_ERROR_STACK_SUPPORTED    
     else if ( 0 != cl_test_verify_error_stack(H5E_ARGS, H5E_BADVALUE, 
                                               "missing required parameter: persist",
@@ -5821,11 +5897,18 @@ vfd_swmr_load_string_config_err_check_3(void)
     {
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
-    if ( H5F_load_swmr_config_from_string(missing_page_size_str, fapl, fcpl, writer, create_file) >= 0 ) {
-       TEST_ERROR;
-    } 
+    H5E_BEGIN_TRY
+    {
+        result =  H5Fswmr_config_string(missing_page_size_str, fapl, fcpl, writer, create_file);
+    }
+    H5E_END_TRY
+
+    if ( result >= 0 ) 
+    {
+        TEST_ERROR;
+    }
 #if VERIFY_ERROR_STACK_SUPPORTED    
     else if ( 0 != cl_test_verify_error_stack(H5E_ARGS, H5E_BADVALUE, 
                                               "missing required parameter: page_size",
@@ -5833,7 +5916,7 @@ vfd_swmr_load_string_config_err_check_3(void)
     {
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
 
     /* Close property lists */
@@ -5862,7 +5945,7 @@ error:
  *
  * Verify that the VFD SWMR property list setup function detects and reports 
  * errors as expected.
- * Specifically, test that H5F_load_swmr_config_from_string() errors when
+ * Specifically, test that H5Fswmr_config_string() errors when
  * configs contain duplicate parameters.
  *
  *                                              Cody S. -- 4/30/26
@@ -5955,11 +6038,12 @@ vfd_swmr_load_string_config_err_check_4(void)
     hid_t   fcpl        = H5I_INVALID_HID;
     hbool_t writer      = true;
     hbool_t create_file = true;
+    herr_t  result;
 #if VERIFY_ERROR_STACK_SUPPORTED
     bool    verbose     = true;
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
-    TESTING("H5F_load_swmr_config_from_string() err detect 4");
+    TESTING("H5Fswmr_config_string() err detect 4");
 
     /* Initialize property lists */
     if ( (fapl = h5_fileaccess()) < 0 )
@@ -5967,9 +6051,16 @@ vfd_swmr_load_string_config_err_check_4(void)
     if ( (fcpl = H5Pcreate(H5P_FILE_CREATE)) < 0 )
         TEST_ERROR;
 
-    if ( H5F_load_swmr_config_from_string(duplicate_H5F_vfd_swmr_config_str, fapl, fcpl, writer, create_file) >= 0 ) {
-       TEST_ERROR;
-    } 
+    H5E_BEGIN_TRY
+    {
+        result = H5Fswmr_config_string(duplicate_H5F_vfd_swmr_config_str, fapl, fcpl, writer, create_file);
+    }
+    H5E_END_TRY
+
+    if ( result >= 0 ) 
+    {
+        TEST_ERROR;
+    }
 #if VERIFY_ERROR_STACK_SUPPORTED    
     else if ( 0 != cl_test_verify_error_stack(H5E_ARGS, H5E_BADVALUE, 
                                               "duplicate parameter: tick_len",
@@ -5977,11 +6068,18 @@ vfd_swmr_load_string_config_err_check_4(void)
     {
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
-    if ( H5F_load_swmr_config_from_string(duplicate_page_buffer_config_str, fapl, fcpl, writer, create_file) >= 0 ) {
-       TEST_ERROR;
-    } 
+    H5E_BEGIN_TRY
+    {
+        result = H5Fswmr_config_string(duplicate_page_buffer_config_str, fapl, fcpl, writer, create_file);
+    }
+    H5E_END_TRY
+
+    if ( result >= 0 ) 
+    {
+        TEST_ERROR;
+    }
 #if VERIFY_ERROR_STACK_SUPPORTED    
     else if ( 0 != cl_test_verify_error_stack(H5E_ARGS, H5E_BADVALUE, 
                                               "duplicate parameter: page_buf_size",
@@ -5989,7 +6087,8 @@ vfd_swmr_load_string_config_err_check_4(void)
     {
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
+
 
     /* Cannot test for duplicate parameters in file_space related configs, since both configurations
      * are limited to only allow 1 parameter */
@@ -6020,7 +6119,7 @@ error:
  *
  * Verify that the VFD SWMR property list setup function detects and reports 
  * errors as expected.
- * Specifically, test that H5F_load_swmr_config_from_string() errors when
+ * Specifically, test that H5Fswmr_config_string() errors when
  * unique parameter range checks are violated.
  *
  *                                              Cody S. -- 5/14/26
@@ -6544,11 +6643,12 @@ vfd_swmr_load_string_config_err_check_5(void)
     hid_t   fcpl        = H5I_INVALID_HID;
     hbool_t writer      = true;
     hbool_t create_file = true;
+    herr_t  result;
 #if VERIFY_ERROR_STACK_SUPPORTED
     bool    verbose     = true;
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
-    TESTING("H5F_load_swmr_config_from_string() err detect 5");
+    TESTING("H5Fswmr_config_string() err detect 5");
 
     /* Initialize property lists */
     if ( (fapl = h5_fileaccess()) < 0 )
@@ -6556,9 +6656,13 @@ vfd_swmr_load_string_config_err_check_5(void)
     if ( (fcpl = H5Pcreate(H5P_FILE_CREATE)) < 0 )
         TEST_ERROR;
 
-    if ( H5F_load_swmr_config_from_string(invalid_config_str_1, 
-                                              fapl, fcpl, writer, 
-                                              create_file) >= 0 )
+    H5E_BEGIN_TRY
+    {
+        result = H5Fswmr_config_string(invalid_config_str_1, fapl, fcpl, writer, create_file);
+    }
+    H5E_END_TRY
+
+    if ( result >= 0 ) 
     {
         TEST_ERROR;
     }
@@ -6569,11 +6673,15 @@ vfd_swmr_load_string_config_err_check_5(void)
     {
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
-    if ( H5F_load_swmr_config_from_string(invalid_config_str_2,
-                                              fapl, fcpl, writer, 
-                                              create_file) >= 0 )
+    H5E_BEGIN_TRY
+    {
+        result = H5Fswmr_config_string(invalid_config_str_2, fapl, fcpl, writer, create_file);
+    }
+    H5E_END_TRY
+
+    if ( result >= 0 ) 
     {
         TEST_ERROR;
     }
@@ -6584,11 +6692,15 @@ vfd_swmr_load_string_config_err_check_5(void)
     {
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
-    if ( H5F_load_swmr_config_from_string(invalid_config_str_3, 
-                                              fapl, fcpl, writer, 
-                                              create_file) >= 0 )
+    H5E_BEGIN_TRY
+    {
+        result = H5Fswmr_config_string(invalid_config_str_3, fapl, fcpl, writer, create_file);
+    }
+    H5E_END_TRY
+
+    if ( result >= 0 ) 
     {
         TEST_ERROR;
     }
@@ -6599,11 +6711,15 @@ vfd_swmr_load_string_config_err_check_5(void)
     {
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
-    if ( H5F_load_swmr_config_from_string(invalid_config_str_4, 
-                                              fapl, fcpl, writer, 
-                                              create_file) >= 0 )
+    H5E_BEGIN_TRY
+    {
+        result = H5Fswmr_config_string(invalid_config_str_4, fapl, fcpl, writer, create_file);
+    }
+    H5E_END_TRY
+
+    if ( result >= 0 ) 
     {
         TEST_ERROR;
     }
@@ -6614,11 +6730,15 @@ vfd_swmr_load_string_config_err_check_5(void)
     {
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
-    if ( H5F_load_swmr_config_from_string(invalid_config_str_5, 
-                                              fapl, fcpl, writer, 
-                                              create_file) >= 0 )
+    H5E_BEGIN_TRY
+    {
+        result = H5Fswmr_config_string(invalid_config_str_5, fapl, fcpl, writer, create_file);
+    }
+    H5E_END_TRY
+
+    if ( result >= 0 ) 
     {
         TEST_ERROR;
     }
@@ -6629,11 +6749,15 @@ vfd_swmr_load_string_config_err_check_5(void)
     {
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
-    if ( H5F_load_swmr_config_from_string(invalid_config_str_6, 
-                                              fapl, fcpl, writer, 
-                                              create_file) >= 0 )
+    H5E_BEGIN_TRY
+    {
+        result = H5Fswmr_config_string(invalid_config_str_6, fapl, fcpl, writer, create_file);
+    }
+    H5E_END_TRY
+
+    if ( result >= 0 ) 
     {
         TEST_ERROR;
     }
@@ -6644,11 +6768,15 @@ vfd_swmr_load_string_config_err_check_5(void)
     {
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
-    if ( H5F_load_swmr_config_from_string(invalid_config_str_7, 
-                                              fapl, fcpl, writer, 
-                                              create_file) >= 0 )
+    H5E_BEGIN_TRY
+    {
+        result = H5Fswmr_config_string(invalid_config_str_7, fapl, fcpl, writer, create_file);
+    }
+    H5E_END_TRY
+
+    if ( result >= 0 ) 
     {
         TEST_ERROR;
     }
@@ -6659,15 +6787,19 @@ vfd_swmr_load_string_config_err_check_5(void)
     {
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
     /* Cannot test upper bound of page_buf_size because most on modern systems, 
      * SIZE_MAX is greater than INT64_MAX (used by config parser int_val) */
     
 
-    if ( H5F_load_swmr_config_from_string(invalid_config_str_8, 
-                                              fapl, fcpl, writer, 
-                                              create_file) >= 0 )
+    H5E_BEGIN_TRY
+    {
+        result = H5Fswmr_config_string(invalid_config_str_8, fapl, fcpl, writer, create_file);
+    }
+    H5E_END_TRY
+
+    if ( result >= 0 ) 
     {
         TEST_ERROR;
     }
@@ -6678,11 +6810,15 @@ vfd_swmr_load_string_config_err_check_5(void)
     {
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
-    if ( H5F_load_swmr_config_from_string(invalid_config_str_9, 
-                                              fapl, fcpl, writer, 
-                                              create_file) >= 0 )
+    H5E_BEGIN_TRY
+    {
+        result = H5Fswmr_config_string(invalid_config_str_9, fapl, fcpl, writer, create_file);
+    }
+    H5E_END_TRY
+
+    if ( result >= 0 ) 
     {
         TEST_ERROR;
     }
@@ -6693,11 +6829,15 @@ vfd_swmr_load_string_config_err_check_5(void)
     {
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
-    if ( H5F_load_swmr_config_from_string(invalid_config_str_10, 
-                                              fapl, fcpl, writer, 
-                                              create_file) >= 0 )
+    H5E_BEGIN_TRY
+    {
+        result = H5Fswmr_config_string(invalid_config_str_10, fapl, fcpl, writer, create_file);
+    }
+    H5E_END_TRY
+
+    if ( result >= 0 ) 
     {
         TEST_ERROR;
     }
@@ -6708,11 +6848,15 @@ vfd_swmr_load_string_config_err_check_5(void)
     {
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
-    if ( H5F_load_swmr_config_from_string(invalid_config_str_11, 
-                                              fapl, fcpl, writer, 
-                                              create_file) >= 0 )
+    H5E_BEGIN_TRY
+    {
+        result = H5Fswmr_config_string(invalid_config_str_11, fapl, fcpl, writer, create_file);
+    }
+    H5E_END_TRY
+
+    if ( result >= 0 ) 
     {
         TEST_ERROR;
     }
@@ -6723,11 +6867,15 @@ vfd_swmr_load_string_config_err_check_5(void)
     {
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
-    if ( H5F_load_swmr_config_from_string(invalid_config_str_12, 
-                                              fapl, fcpl, writer, 
-                                              create_file) >= 0 )
+    H5E_BEGIN_TRY
+    {
+        result = H5Fswmr_config_string(invalid_config_str_12, fapl, fcpl, writer, create_file);
+    }
+    H5E_END_TRY
+
+    if ( result >= 0 ) 
     {
         TEST_ERROR;
     }
@@ -6738,11 +6886,15 @@ vfd_swmr_load_string_config_err_check_5(void)
     {
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
-    if ( H5F_load_swmr_config_from_string(invalid_config_str_13, 
-                                              fapl, fcpl, writer, 
-                                              create_file) >= 0 )
+    H5E_BEGIN_TRY
+    {
+        result = H5Fswmr_config_string(invalid_config_str_13, fapl, fcpl, writer, create_file);
+    }
+    H5E_END_TRY
+
+    if ( result >= 0 ) 
     {
         TEST_ERROR;
     }
@@ -6753,7 +6905,7 @@ vfd_swmr_load_string_config_err_check_5(void)
     {
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
     /* Close property lists */
     if ( H5Pclose(fapl) < 0 )
@@ -6781,7 +6933,7 @@ error:
  *
  * Verify that the VFD SWMR property list setup function detects and reports 
  * errors as expected.
- * Specifically, test that H5F_load_swmr_config_from_string() errors when
+ * Specifically, test that H5Fswmr_config_string() errors when
  * strings that are too large are used.
  *
  *                                              Cody S. -- 5/14/26
@@ -6844,11 +6996,12 @@ vfd_swmr_load_string_config_err_check_6(void)
     hid_t   fcpl        = H5I_INVALID_HID;
     hbool_t writer      = true;
     hbool_t create_file = true;
+    herr_t  result;
 #if VERIFY_ERROR_STACK_SUPPORTED
     bool    verbose     = true;
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
-    TESTING("H5F_load_swmr_config_from_string() err detect 6");
+    TESTING("H5Fswmr_config_string() err detect 6");
 
     /* Initialize property lists */
     if ( (fapl = h5_fileaccess()) < 0 )
@@ -6856,9 +7009,13 @@ vfd_swmr_load_string_config_err_check_6(void)
     if ( (fcpl = H5Pcreate(H5P_FILE_CREATE)) < 0 )
         TEST_ERROR;
 
-    if ( H5F_load_swmr_config_from_string(config_str, 
-                                          fapl, fcpl, writer, 
-                                          create_file) >= 0 )
+    H5E_BEGIN_TRY
+    {
+        result = H5Fswmr_config_string(config_str, fapl, fcpl, writer, create_file);
+    }
+    H5E_END_TRY
+
+    if ( result >= 0 ) 
     {
         TEST_ERROR;
     }
@@ -6869,7 +7026,7 @@ vfd_swmr_load_string_config_err_check_6(void)
     {
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
     /* Close property lists */
     if ( H5Pclose(fapl) < 0 )
@@ -7058,7 +7215,7 @@ vfd_swmr_config_check_err_check_1(void)
 
 #if VERIFY_ERROR_STACK_SUPPORTED
     bool verbose = true;
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
 
     TESTING("H5P_check_vfd_swmr_config() err detect 1");
@@ -7074,7 +7231,7 @@ vfd_swmr_config_check_err_check_1(void)
     {
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
     if ( H5P_check_vfd_swmr_config(&invalid_config_1) >= 0 )
     {
@@ -7087,7 +7244,7 @@ vfd_swmr_config_check_err_check_1(void)
     {
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
     if ( H5P_check_vfd_swmr_config(&invalid_config_2) >= 0 )
     {
@@ -7100,7 +7257,7 @@ vfd_swmr_config_check_err_check_1(void)
     {
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
     if ( H5P_check_vfd_swmr_config(&invalid_config_3) >= 0 )
     {
@@ -7113,7 +7270,7 @@ vfd_swmr_config_check_err_check_1(void)
     {
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
     if ( H5P_check_vfd_swmr_config(&invalid_config_4) >= 0 )
     {
@@ -7126,7 +7283,7 @@ vfd_swmr_config_check_err_check_1(void)
     {
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
     if ( H5P_check_vfd_swmr_config(&invalid_config_5) >= 0 )
     {
@@ -7139,7 +7296,7 @@ vfd_swmr_config_check_err_check_1(void)
     {
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
     if ( H5P_check_vfd_swmr_config(&invalid_config_6) >= 0 )
     {
@@ -7152,7 +7309,7 @@ vfd_swmr_config_check_err_check_1(void)
     {
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
     if ( H5P_check_vfd_swmr_config(&invalid_config_7) >= 0 )
     {
@@ -7165,7 +7322,7 @@ vfd_swmr_config_check_err_check_1(void)
     {
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
     /* Cannot test updater_file_path/log_file_path upper length bounds here,
     * because the struct fields are fixed-size arrays that cap valid strlen().
@@ -7299,7 +7456,7 @@ cl_load_string_from_file_err_check_1(void)
     char *loaded_str = NULL;
 #if VERIFY_ERROR_STACK_SUPPORTED
     bool  verbose    = true;
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
     TESTING("H5CL_load_config_string_from_file err detect 1");
 
@@ -7315,7 +7472,7 @@ cl_load_string_from_file_err_check_1(void)
 
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
     /* SECOND: test a non existing file */
 
@@ -7329,7 +7486,7 @@ cl_load_string_from_file_err_check_1(void)
 
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
     /* THIRD: test a non regular file */
 
@@ -7349,7 +7506,7 @@ cl_load_string_from_file_err_check_1(void)
 
         TEST_ERROR;
     }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
     if ( rmdir(NON_REGULAR_CONFIG_FILE_NAME) != 0) {
         perror("rmdir error");
@@ -7420,7 +7577,7 @@ cl_load_string_from_file_err_check_2(void)
     char *loaded_str = NULL;
 #if VERIFY_ERROR_STACK_SUPPORTED
     bool  verbose    = true;
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
     int   i;
 
     TESTING("H5CL_load_config_string_from_file err detect 2");
@@ -7444,7 +7601,7 @@ cl_load_string_from_file_err_check_2(void)
 
             TEST_ERROR;
         }
-#endif
+#endif /* VERIFY_ERROR_STACK_SUPPORTED */
 
         if (loaded_str) {
             free(loaded_str);

@@ -122,13 +122,14 @@ configure_test_env() {
             md_file_path=""
             writer_cmd="${PROJECT_DIR}/test/vfd_swmr_attrdset_writer"
             reader_cmd="${PROJECT_DIR}/test/vfd_swmr_attrdset_reader"
-            aux_proc_cmd="${PROJECT_DIR}/utils/vfd_swmr/aux_process /mnt/md/attrdset-mdfile attrdset_updater"
-            # aux_proc_cmd="" # No aux process for attrdset test
+            # aux_proc_cmd="${PROJECT_DIR}/utils/vfd_swmr/aux_process /mnt/md/attrdset-mdfile attrdset_updater"
+            aux_proc_cmd="" # No aux process for attrdset test
             generated_files="vfd_swmr_attrdset.h5 attrdset-mdfile"
 
-            
+            config_file=""
+
             # configuration file path for HDF5_VFD_SWMR_CONFIG env variable
-            config_file="${PROJECT_DIR}/test/vfd_swmr_attrdset_config.txt"
+            # config_file="${PROJECT_DIR}/test/vfd_swmr_attrdset_config.txt"
             ;;
         bigset)
             # Reconstructed options from test_vfd_swmr.sh's "bigset" tests
@@ -266,13 +267,11 @@ configure_test_env() {
             # Configure basic command paths
             writer_cmd="${PROJECT_DIR}/test/vfd_swmr_dsetchks_writer"
             reader_cmd="${PROJECT_DIR}/test/vfd_swmr_dsetchks_reader"
-            writer_cmd="${PROJECT_DIR}/test/vfd_swmr_dsetchks_writer"
-            reader_cmd="${PROJECT_DIR}/test/vfd_swmr_dsetchks_reader"
             aux_proc_cmd="" # No aux process for dsetchks test
             generated_files="vfd_swmr_dsetchks.h5 dsetchks-shadow"
 
             # # configuration file path for HDF5_VFD_SWMR_CONFIG env variable
-            # config_file=""
+            config_file=""
 
             # # Configure basic command paths
             # md_file_path=""

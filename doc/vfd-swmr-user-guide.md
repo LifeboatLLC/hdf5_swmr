@@ -78,34 +78,62 @@ utilities built by the VFD SWMR project.
 
 ## Download
 
-Clone the HDF5 repository in a new directory, then switch to the 
-`feature/vfd_swmr` branch as follows:
+Clone the HDF5 repository in a new directory:
 
-```
-% git clone https://github.com/HDFGroup/hdf5 swmr
-% cd swmr
-% git checkout feature/vfd_swmr
+```bash
+git clone https://github.com/LifeboatLLC/hdf5_swmr
+cd hdf5_swmr
 ```
 
 ## Build
 
-There are no special instructions for building VFD SWMR. Simply follow
-the usual build procedure for CMake or the Autotools using the guides
-in the `release_docs` directory.
+> [!IMPORTANT]
+> The VFD SWMR branches are maintenance branches and default to a debug
+> build.
+>
+> Generated build files are **not** included. If you plan to build with
+> CMake, Perl is required. If you plan to build with Autotools, the
+> Autotools utilities (Autoconf, Automake, Libtool, etc.) are required.
 
-IMPORTANT:
+### Autotools prerequisites
+Before building, install the following tools using your system's package
+manager:
 
-The VFD SWMR branches are maintenance branches and will default to a debug
-build. They also do not come with generated files, so Perl will be required
-when building with CMake and Perl and the Autotools (autoconf, etc.) will
-be required when building with the Autotools.
+- `autoconf`
+- `automake`
+- `libtool`
+- `m4`
+- `gettext`
+- `pkg-config` (or `pkgconf`, depending on the package available on your system)
 
-Run `autogen.sh` script in the top
-directory if building with Autotools to generate required files. 
+If you install any of these packages during this process, close and reopen
+your terminal (or start a new shell session) before continuing. This ensures
+that newly installed commands are available in your `PATH`.
+
+### Build instructions (Autotools)
+This project must currently be built from the source directory.
+
+From the top-level source directory:
+
+```sh
+./autogen.sh
+./configure --enable-aux-process --disable-shared --prefix="$PWD/install"
+make
+make install
+```
+
+To speed up compilation, you may optionally use parallel builds:
+
+```sh
+make -jN
+make -jN install
+```
+
+where `N` is the number of CPU cores available on your system (e.g., 4, 8, 16).
 
 Some notes:
 
-- The VFD SWMR tests can take some time to run.
+- The VFD SWMR tests (which can be ran using `make test`) can take some time to run.
 - The VFD SWMR acceptance tests will typically emit some output about "expected errors" that you can ignore. Real errors are clearly flagged.
 - If the tests do not pass on your system, please let the developers know via the email address given at the end of this document.
 

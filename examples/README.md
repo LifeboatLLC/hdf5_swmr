@@ -60,7 +60,7 @@ HDF5_VFD_SWMR_CONFIG=credel_swmr_config.txt ./credel -v
 ---
 #### Standalone Run:
 ```bash
-HDF5_VFD_SWMR_CONFIG=gaussians_swmr_config.txt ./gaussians
+./gaussians
 ```
 
 #### To run as writer and reader:
@@ -74,23 +74,28 @@ HDF5_VFD_SWMR_CONFIG=gaussians_swmr_config.txt ./rgaussians
 
 ## 3. Using `h5dump` with demo VFD SWMR configurations
 
-`h5dump` supports the `--swmr-config-file` option, which allows a VFD SWMR configuration file to be loaded before opening an HDF5 file. The configuration is applied to the file access property list (FAPL) used by h5dump, enabling the tool to access files that require specific VFD SWMR settings.
+`h5dump` supports the `--swmr-config-file` option, which allows a VFD SWMR configuration file to be applied to the file access property list (FAPL) used by `h5dump`. This allows `h5dump` to open an HDF5 file while a writer is actively writing to the file.
 
->**Note:** This functionality has only been verified with `credel.h5` and `credel_swmr_config.txt`. Using `h5dump` with `gaussians.h5` and `gaussians_swmr_config.txt` currently results in errors.
 
 ### Running `h5dump` on credel.h5
 
-After running the credel demo program:
 ```bash
+# In one terminal window:
+HDF5_VFD_SWMR_CONFIG=credel_swmr_config.txt ./credel -v
+
+# In another terminal window:
 ../install/bin/h5dump --swmr-config-file=credel_swmr_config.txt ./credel.h5
 ```
 
-<!-- ### Running h5dump on gaussians.h5
+### Running h5dump on gaussians.h5
 
-After running the gaussians demo program:
 ```bash
+# In one terminal window:
+HDF5_VFD_SWMR_CONFIG=gaussians_swmr_config.txt ./wgaussians
+
+# In another terminal window:
 ../install/bin/h5dump --swmr-config-file=gaussians_swmr_config.txt ./gaussians.h5
-``` -->
+```
 
 ## 4. Testing `recovery_tool` with demos
 These examples demonstrate recovering an HDF5 file after an interrupted or incomplete write by applying updater files generated during execution.
