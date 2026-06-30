@@ -121,7 +121,7 @@ crasher -v -p 5 ./my_program arg1 arg2
 test_crash_recovery.sh
 ======================
 ### Purpose
-Intended for development purposes.
+Intended for testing purposes. Contact info@lifeboat.llc if you have issues running this script, or if you have questions or suggestions.
 
 This script automates validation of the VFD SWMR recovery mechanism. It is intended for developers testing changes to the recovery process or verifying that VFD SWMR writer programs can be recovered correctly after unexpected termination. The script repeatedly exercises the recovery workflow across a range of crash timings and validates the recovered HDF5 files automatically.
 
@@ -220,7 +220,7 @@ crashed, at which point the test for that configuration ends.
 exec_local_socket_test.sh
 =========================
 ### Purpose
-Intended for development purposes.
+Intended for testing purposes. Contact info@lifeboat.llc if you have issues running this script, or if you have questions or suggestions.
 
 This script is the local-socket counterpart to `exec_nfs_socket_test.sh`. It provides a convenient way to run and debug the VFD SWMR socket communication tests locally without requiring an NFS-mounted filesystem.
 
@@ -249,11 +249,25 @@ Can be one of the following:
 'reader' or 'writer' to indicate which role to run.  
 Also accepts just 'r' or 'w'.
 
+### How to run:
+
+**Terminal 1**  
+Run the script with the writer role:
+```bash
+./exec_nfs_socket_test.sh all w
+```
+
+**Terminal 2:**
+Start the script with the reader role after the writer role has started:
+```bash
+./exec_nfs_socket_test.sh all r
+```
+
 
 exec_nfs_socket_test.sh
 =======================
 ### Purpose
-Intended for development purposes.
+Intended for testing purposes. Contact info@lifeboat.llc if you have issues running this script, or if you have questions or suggestions.
 
 This script is the NFS-based counterpart to `exec_local_socket_test.sh`. It provides a convenient way to run and debug the VFD SWMR socket communication tests in a networked environment using an NFS-mounted filesystem.
 
@@ -263,7 +277,7 @@ The writer and reader roles are intended to be run on separate systems that shar
 
 > *Note:* The IP_ADDRESS variable at the top of script must be editted to contain a valid IP address string of the writer system for socket connection.
 
-### Usage
+### Usage:
 ```bash
 ./exec_nfs_socket_test.sh <test> <role> [md_dir]
 ```
@@ -286,7 +300,21 @@ Also accepts just 'r' or 'w'.
 - `[md_dir]`  
 Optional directory path to place the metadata file (only for bigset test).
 
-### Additional Information
+### Additional Information:
 The writer and reader roles should be started on separate systems, with the writer started first so that the socket connection can be established correctly.
 
 For the `bigset` test, the auxiliary process must create the external metadata file on a local POSIX filesystem. Therefore, when running the reader, `[md_dir]` must specify a valid local POSIX directory. This argument is ignored by the writer.
+
+### How to run:
+
+**Terminal 1 (writer system):**  
+Run the script with the writer role from the NFS-mounted directory:
+```bash
+/path/to/exec_nfs_socket_test.sh all w
+```
+
+**Terminal 2 (reader system):**
+Start the script with the reader role after the writer role has started:
+```bash
+/path/to/exec_nfs_socket_test.sh all r /path/to/local/metadata/directory/
+```
